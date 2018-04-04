@@ -1,3 +1,3 @@
 <?php
 
-echo $_GET['url'];
+require_once 'vendor/autoload.php';
