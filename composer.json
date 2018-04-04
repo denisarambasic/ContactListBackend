@@ -3,5 +3,8 @@
 		"psr-4" : {
 			"Typeqast\\" : "app/Typeqast"
 		}
+	},
+	"require": {
+		"vlucas/phpdotenv": "^2.4"
 	}
 }
