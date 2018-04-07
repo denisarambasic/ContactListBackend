@@ -6,7 +6,7 @@ use Typeqast\Models\User;
 
 class UserController
 {
-	
+	/*=== Get all users ===*/
 	public function getAllUsers()
 	{
 		header('Access-Control-Allow-Origin: *');
@@ -24,6 +24,31 @@ class UserController
 		echo json_encode($user_temp);
 
 	}
+	
+	/*=== Get user by id ===*/
+	public function getUserById($id){
+		header('Access-Control-Allow-Origin: *');
+		header('Access-Control-Allow-Methods: GET');
+		header('Content-type: application/json');
+		//echo json_encode(['id'=>$id]);
+	}	
+	
+	/*=== Update user by id ===*/
+	public function updateUserById($id){
+		header('Access-Control-Allow-Origin: *');
+		header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization');
+		header('Access-Control-Allow-Methods: PATCH');
+		
+		$data = json_decode(file_get_contents('php://input'));
+		$id = $data->id;
+		$favorite = $data->favorite;
+		
+		$user = new User();
+		$user_id = $user->updateUserById($id, $favorite);
+		
+		echo json_encode(['message' => 'User updated']);
+		
+	}	
 	
 	public function createUser()
 	{

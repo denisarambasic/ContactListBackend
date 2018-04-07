@@ -53,4 +53,13 @@ class User extends BaseModel
 		return $stmt->execute();
 	}
 	
+	/*=== Update user by id favorite ===*/
+	public function updateUserById($id, $favorite)
+	{
+		$query = "UPDATE users SET favorite= :favorite WHERE id = :id";
+		$stmt = $this->getConnection()->prepare($query);
+		$stmt->bindParam('favorite', $favorite);
+		$stmt->bindParam('id', $id);
+		return $stmt->execute();
+	}
 }
