@@ -14,6 +14,16 @@ class User extends BaseModel
 		return $stmt->fetchAll(\PDO::FETCH_ASSOC);
 	}
 	
+	/*=== GET user by id ===*/
+	public function getUserById($id)
+	{
+		$query = "SELECT * FROM users WHERE id= :id";
+		$stmt = $this->getConnection()->prepare($query);
+		$stmt->bindParam('id', $id);
+		$stmt->execute();
+		return $stmt->fetch(\PDO::FETCH_ASSOC);
+	}
+	
 	/*=== Get the list of phones for that user ===*/
 	public function getPhonesByUser($user_id)
 	{
@@ -59,6 +69,15 @@ class User extends BaseModel
 		$query = "UPDATE users SET favorite= :favorite WHERE id = :id";
 		$stmt = $this->getConnection()->prepare($query);
 		$stmt->bindParam('favorite', $favorite);
+		$stmt->bindParam('id', $id);
+		return $stmt->execute();
+	}
+	
+	/*=== Delete user(contact) by id ===*/
+	public function deleteUser($id)
+	{
+		$query = "DELETE FROM users WHERE id = :id";
+		$stmt = $this->getConnection()->prepare($query);
 		$stmt->bindParam('id', $id);
 		return $stmt->execute();
 	}
