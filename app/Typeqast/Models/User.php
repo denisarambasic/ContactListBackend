@@ -25,4 +25,32 @@ class User extends BaseModel
 		
 	}
 	
+	/*=== Insert a new user (contact) into db ===*/
+	public function addNewUser($first_name, $last_name, $image_name, $email, $favorites)
+	{
+		$query = "INSERT INTO users VALUES (NULL, :first_name, :last_name, :image_name, :email, :favorites)";
+		$stmt = $this->getConnection()->prepare($query);
+		$stmt->bindParam('first_name', $first_name);
+		$stmt->bindParam('last_name', $last_name);
+		$stmt->bindParam('image_name', $image_name);
+		$stmt->bindParam('email', $email);
+		$stmt->bindParam('favorites', $favorites);
+		$stmt->execute();
+		
+		//return the id of the inserted row
+		return $this->getConnection()->lastInsertId();
+		
+	}
+	
+	/*=== Isert phones for that user(contact) into phones tbl ===*/
+	public function insertPhone($user_id, $name, $number)
+	{
+		$query = "INSERT INTO phones VALUES (NULL, :name, :number, :user_id)";
+		$stmt = $this->getConnection()->prepare($query);
+		$stmt->bindParam('name', $name);
+		$stmt->bindParam('number', $number);
+		$stmt->bindParam('user_id', $user_id);
+		return $stmt->execute();
+	}
+	
 }
