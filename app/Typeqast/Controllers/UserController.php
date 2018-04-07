@@ -37,7 +37,7 @@ class UserController
 	public function updateUserById($id){
 		header('Access-Control-Allow-Origin: *');
 		header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization');
-		header('Access-Control-Allow-Methods: PATCH');
+		header('Access-Control-Allow-Methods: DELETE, PATCH');
 		
 		$data = json_decode(file_get_contents('php://input'));
 		$id = $data->id;
@@ -48,8 +48,30 @@ class UserController
 		
 		echo json_encode(['message' => 'User updated']);
 		
-	}	
+	}
 	
+	public function deleteUser($id)
+	{
+		header('Access-Control-Allow-Origin: *');
+		header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization');
+		header('Access-Control-Allow-Methods: DELETE');
+		
+		//DELETE user(contact) FROM db;
+		$user = new User();
+		
+		//Get User by id that we can take the users image name to delete it;
+		$currentUser = $user->getUserById($id);
+		
+		//delete image for this user(contact)
+		unlink(dirname(__DIR__, 3).'/img/'. $currentUser['image_name']);
+
+		//finally delete the user(contact) because a constraint is set on the phones table
+		//we can only delete the user(contact) and all entries for that user will be deleted in the phones tbl
+		$user_id = $user->deleteUser($id);
+		echo json_encode(['message' => 'User deleted']);
+	}
+	
+	// Create user (contact)
 	public function createUser()
 	{
 		header('Access-Control-Allow-Origin: *');
