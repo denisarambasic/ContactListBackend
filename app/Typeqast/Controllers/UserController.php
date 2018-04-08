@@ -28,9 +28,15 @@ class UserController
 	/*=== Get user by id ===*/
 	public function getUserById($id){
 		header('Access-Control-Allow-Origin: *');
-		header('Access-Control-Allow-Methods: GET');
+				
+		$user = new User();
+		$currentUser = $user->getUserById($id);
+		
+		$currentUser = array_merge($currentUser, ['phones' => $user->getPhonesByUser($currentUser['id'])]);
+		http_response_code(200);
 		header('Content-type: application/json');
-		//echo json_encode(['id'=>$id]);
+		echo json_encode($currentUser);
+		
 	}	
 	
 	/*=== Update user by id ===*/
