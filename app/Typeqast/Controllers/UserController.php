@@ -59,6 +59,26 @@ class UserController
 		
 	}	
 	
+	/*=== Get all users based on an search value ===*/
+	public function getAllUsersOnSearch($search_value){
+		header('Access-Control-Allow-Origin: *');
+		header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization');
+		$user = new User();
+		$users = $user->getAllUsersBySearchValue($search_value);
+		$user_temp = [];
+		
+		//Get the phones for every user
+		foreach($users as $u){
+			$user_temp[] = array_merge($u, ['phones' => $user->getPhonesByUser($u['id'])]);
+		}
+		
+		http_response_code(200);
+		header('Content-type: application/json');
+		echo json_encode($user_temp);
+		
+		
+		
+	}
 	/*=== Update user by id ===*/
 	public function updateUserById($id){
 		header('Access-Control-Allow-Origin: *');

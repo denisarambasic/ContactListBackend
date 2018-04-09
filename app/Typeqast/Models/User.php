@@ -33,6 +33,19 @@ class User extends BaseModel
 		return $stmt->fetch(\PDO::FETCH_ASSOC);
 	}
 	
+	/*=== GET all users based on a search value ===*/
+	public function getAllUsersBySearchValue($search_value)
+	{
+		$query = "SELECT users.id, first_name, last_name, image_name, email, favorite FROM users 
+					INNER JOIN phones ON users.id = phones.user_id WHERE  first_name LIKE ? OR last_name LIKE ?
+					OR email LIKE ? OR name LIKE ? OR number LIKE ?";
+		$stmt = $this->getConnection()->prepare($query);
+		$params= array("%$search_value%", "%$search_value%", "%$search_value%", "%$search_value%", "%$search_value%");
+		$stmt->execute($params);
+		//echo $stmt->queryString; die;
+		return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+	}
+	
 	/*=== Get the list of phones for that user ===*/
 	public function getPhonesByUser($user_id)
 	{
