@@ -119,7 +119,7 @@ class UserController
 		
 		
 		$email 			= filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
-		$favorite		= ($_POST['favorite'] == "true") ? 1 : 0;
+		$favorite		= ($_POST['favorite'] == 1) ? 1 : 0;
 		
 		//check if phones is set
 		if(isset($_POST['phones'])){

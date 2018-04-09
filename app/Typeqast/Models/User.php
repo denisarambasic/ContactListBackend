@@ -14,6 +14,15 @@ class User extends BaseModel
 		return $stmt->fetchAll(\PDO::FETCH_ASSOC);
 	}
 	
+	/*=== Get all Users ===*/
+	public function getAllFavoritesUsers()
+	{
+		$query = "SELECT * FROM users WHERE favorite = 1";
+		$stmt = $this->getConnection()->prepare($query);
+		$stmt->execute();
+		return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+	}
+	
 	/*=== GET user by id ===*/
 	public function getUserById($id)
 	{
