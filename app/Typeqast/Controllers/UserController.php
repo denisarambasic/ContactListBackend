@@ -74,11 +74,29 @@ class UserController
 		
 		http_response_code(200);
 		header('Content-type: application/json');
-		echo json_encode($user_temp);
-		
-		
-		
+		echo json_encode($user_temp);	
+			
 	}
+	
+	/*=== Get all users based on an search value ===*/
+	public function getAllFavoriteUsersOnSearch($search_value){
+		header('Access-Control-Allow-Origin: *');
+		$user = new User();
+		$users = $user->getAllFavoriteUsersBySearchValue($search_value);
+		$user_temp = [];
+		
+		//Get the phones for every user
+		foreach($users as $u){
+			$user_temp[] = array_merge($u, ['phones' => $user->getPhonesByUser($u['id'])]);
+		}
+		
+		http_response_code(200);
+		header('Content-type: application/json');
+		echo json_encode($user_temp);	
+			
+	}
+	
+	
 	/*=== Update user by id ===*/
 	public function updateUserById($id){
 		header('Access-Control-Allow-Origin: *');

@@ -9,6 +9,9 @@ $routes->setRoute('GET', '/api/users', 'UserController', 'getAllUsers', []);
 /*== Get all favorite users ==*/
 $routes->setRoute('GET', '/api/users/favorites', 'UserController', 'getAllFavoritesUsers', []);
 
+/*== Get all favorites users based on a search value ==*/
+$routes->setRoute('GET', '/api/users/favorites/search', 'UserController', 'getAllFavoriteUsersOnSearch', ['value']);
+
 /*== Get all users based on a search value ==*/
 $routes->setRoute('GET', '/api/users/search', 'UserController', 'getAllUsersOnSearch', ['value']);
 
