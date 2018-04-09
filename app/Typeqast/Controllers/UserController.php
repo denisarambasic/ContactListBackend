@@ -25,6 +25,26 @@ class UserController
 
 	}
 	
+	/*=== Get all favorite users ===*/
+	public function getAllFavoritesUsers()
+	{
+		header('Access-Control-Allow-Origin: *');
+		$user = new User();
+		$users = $user->getAllFavoritesUsers();
+		$user_temp = [];
+		
+		//Get the phones for every user
+		foreach($users as $u){
+			$user_temp[] = array_merge($u, ['phones' => $user->getPhonesByUser($u['id'])]);
+		}
+		
+		http_response_code(200);
+		header('Content-type: application/json');
+		echo json_encode($user_temp);
+
+	}
+	
+	
 	/*=== Get user by id ===*/
 	public function getUserById($id){
 		header('Access-Control-Allow-Origin: *');
