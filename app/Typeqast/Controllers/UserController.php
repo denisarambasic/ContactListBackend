@@ -129,8 +129,10 @@ class UserController
 		//Get User by id that we can take the users image name to delete it;
 		$currentUser = $user->getUserById($id);
 		
-		//delete image for this user(contact)
-		unlink(dirname(__DIR__, 3).'/img/'. $currentUser['image_name']);
+		//delete image for this user(contact) if exists
+		if($currentUser['image_name']){
+			unlink(dirname(__DIR__, 3).'/img/'. $currentUser['image_name']);
+		}
 
 		//finally delete the user(contact) because a constraint is set on the phones table
 		//we can only delete the user(contact) and all entries for that user will be deleted in the phones tbl
@@ -149,22 +151,12 @@ class UserController
 		$first_name 	= filter_input(INPUT_POST, 'first_name', FILTER_SANITIZE_STRING);
 		$last_name 		= filter_input(INPUT_POST, 'last_name', FILTER_SANITIZE_STRING);
 		//if new image give it a name if not set to false
-		if($_FILES){
-			$image_name		= time() . $_FILES['image_name']['name'];
-		}else {
-			$image_name		= false;
-		}
-		
-		
+		$image_name		= ($_FILES) ? time() . $_FILES['image_name']['name'] : false;
 		$email 			= filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
 		$favorite		= ($_POST['favorite'] == 1) ? 1 : 0;
 		
 		//check if phones is set
-		if(isset($_POST['phones'])){
-			$phones	= $_POST['phones'];
-		}else{
-			$phones	= null;
-		}
+		$phones	= isset($_POST['phones']) ? $_POST['phones'] : null;
 		
 		$user = new User();
 		
@@ -177,7 +169,11 @@ class UserController
 			//to delete it from the img folder
 			$thisUser = $user->getUserById($id);
 			$image_name_old = $thisUser['image_name'];
-			unlink(dirname(__DIR__, 3).'/img/'. $image_name_old);
+			
+			//delete from img folder if exists
+			if($image_name_old ){				
+				unlink(dirname(__DIR__, 3).'/img/'. $image_name_old);
+			}
 			
 			//upload the new file
 			$this->upload($image_name);
@@ -213,13 +209,17 @@ class UserController
 		
 		$first_name 	= filter_input(INPUT_POST, 'first_name', FILTER_SANITIZE_STRING);
 		$last_name 		= filter_input(INPUT_POST, 'last_name', FILTER_SANITIZE_STRING);
-		$image_name		= time() . $_FILES['image_name']['name'];
+		//if new image give it a name if not set to false
+		$image_name		= ($_FILES) ? time() . $_FILES['image_name']['name'] : false;
 		$email 			= filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
 		$favorite		= ($_POST['favorite'] == "true") ? 1 : 0;
-		$phones			= $_POST['phones'];
-		
-		//upload file
-		$this->upload($image_name);
+		//check if phones is set
+		$phones	= isset($_POST['phones']) ? $_POST['phones'] : null;
+
+		//upload file if exists
+		if($image_name){
+			$this->upload($image_name);
+		}
 				
 		//*Insert a new user(contact) into users table;
 		$user = new User();
@@ -227,10 +227,12 @@ class UserController
 	
 		
 		//Insert phones for that user (contact) into phones tbl
-		foreach($phones as $phone)
-		{
-			$data = json_decode($phone);
-			$user->insertPhone($user_id, filter_var($data->name, FILTER_SANITIZE_STRING), filter_var($data->number, FILTER_SANITIZE_STRING));
+		if($phones){
+			foreach($phones as $phone)
+			{
+				$data = json_decode($phone);
+				$user->insertPhone($user_id, filter_var($data->name, FILTER_SANITIZE_STRING), filter_var($data->number, FILTER_SANITIZE_STRING));
+			}
 		}
 		
 
