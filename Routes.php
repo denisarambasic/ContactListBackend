@@ -13,6 +13,9 @@ $routes->setRoute('OPTIONS', '/api/users/create', 'UserController', 'createUser'
 $routes->setRoute('GET', '/api/users', 'UserController', 'getUserById', ['id']);
 //Update user (favorite field) by id
 $routes->setRoute('PATCH', '/api/users', 'UserController', 'updateUserById', ['id']);
+
+//Update all fielda (try with put but cannot take the data from the payload)
+$routes->setRoute('POST', '/api/users', 'UserController', 'updateUserByIdAll', ['id']);
 //delete user
 $routes->setRoute('DELETE', '/api/users', 'UserController', 'deleteUser', ['id']);
 //to handle preflight request

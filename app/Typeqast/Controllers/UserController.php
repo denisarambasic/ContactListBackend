@@ -43,7 +43,9 @@ class UserController
 	public function updateUserById($id){
 		header('Access-Control-Allow-Origin: *');
 		header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization');
-		header('Access-Control-Allow-Methods: DELETE, PATCH');
+		header('Access-Control-Allow-Methods: DELETE, PATCH, PUT');
+
+		if($_SERVER['REQUEST_METHOD'] == 'PATCH'){
 		
 		$data = json_decode(file_get_contents('php://input'));
 		$id = $data->id;
@@ -53,6 +55,7 @@ class UserController
 		$user_id = $user->updateUserById($id, $favorite);
 		
 		echo json_encode(['message' => 'User updated']);
+		}
 		
 	}
 	
@@ -76,6 +79,72 @@ class UserController
 		$user_id = $user->deleteUser($id);
 		echo json_encode(['message' => 'User deleted']);
 	}
+	
+	//update user by id all fields
+	public function updateUserByIdAll($id)
+	{
+		header('Access-Control-Allow-Origin: *');
+		header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization');
+		header('Access-Control-Allow-Methods: DELETE, PATCH, POST');
+		
+		
+		$first_name 	= filter_input(INPUT_POST, 'first_name', FILTER_SANITIZE_STRING);
+		$last_name 		= filter_input(INPUT_POST, 'last_name', FILTER_SANITIZE_STRING);
+		//if new image give it a name if not set to false
+		if($_FILES){
+			$image_name		= time() . $_FILES['image_name']['name'];
+		}else {
+			$image_name		= false;
+		}
+		
+		
+		$email 			= filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
+		$favorite		= ($_POST['favorite'] == "true") ? 1 : 0;
+		
+		//check if phones is set
+		if(isset($_POST['phones'])){
+			$phones	= $_POST['phones'];
+		}else{
+			$phones	= null;
+		}
+		
+		$user = new User();
+		
+		//1. if image_name == null update all fields without image_name
+		if(!$image_name){
+			$user->updateUserWithoutImg($id, $first_name, $last_name, $email, $favorite);
+		}else{
+
+			//if image_name exists that means that someone edit his profile image we need to get the old image name
+			//to delete it from the img folder
+			$thisUser = $user->getUserById($id);
+			$image_name_old = $thisUser['image_name'];
+			unlink(dirname(__DIR__, 3).'/img/'. $image_name_old);
+			
+			//upload the new file
+			$this->upload($image_name);
+					
+			//*Update the user with all fields;
+
+			$user->updateUserWithImg($id, $first_name, $last_name, $image_name, $email, $favorite);	
+			
+		}
+		
+		//delete all phones for that user and set it again
+		$user->deleteUserPhones($id);
+
+		//Insert phones for that user (contact) into phones tbl again.
+		if($phones){
+			foreach($phones as $phone)
+			{
+				$data = json_decode($phone);
+				$user->insertPhone($id, filter_var($data->name, FILTER_SANITIZE_STRING), filter_var($data->number, FILTER_SANITIZE_STRING));
+			}
+		}
+		echo json_encode(['message'=>'user updated']);
+		
+	}
+	
 	
 	// Create user (contact)
 	public function createUser()
@@ -116,9 +185,9 @@ class UserController
 		
 	
 		if (move_uploaded_file($_FILES['image_name']['tmp_name'], $upload_dir. $filename)) {
-			echo json_encode(['mess'=>"Uploaded"]);
+			//echo json_encode(['mess'=>"Uploaded"]);
 		} else {
-			echo json_encode(['mess'=>"File was not uploaded"]);
+			//echo json_encode(['mess'=>"File was not uploaded"]);
 		}
 	}
 	

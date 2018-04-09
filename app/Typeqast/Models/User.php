@@ -35,6 +35,33 @@ class User extends BaseModel
 		
 	}
 	
+	/*=== Update the user without image ===*/
+	public function updateUserWithoutImg($id, $first_name, $last_name, $email, $favorite)
+	{
+		$query = "UPDATE users SET first_name=:first_name, last_name=:last_name, email=:email, favorite= :favorite WHERE id = :id";
+		$stmt = $this->getConnection()->prepare($query);
+		$stmt->bindParam('id', $id);
+		$stmt->bindParam('first_name', $first_name);
+		$stmt->bindParam('last_name', $last_name);
+		$stmt->bindParam('email', $email);
+		$stmt->bindParam('favorite', $favorite);
+		return $stmt->execute();
+	}
+	
+	//Updade user with img
+	public function updateUserWithImg($id, $first_name, $last_name, $image_name, $email, $favorite)
+	{
+		$query = "UPDATE users SET first_name=:first_name, last_name=:last_name, image_name=:image_name, email=:email, favorite=:favorite WHERE id =:id";
+		$stmt = $this->getConnection()->prepare($query);
+		$stmt->bindParam('id', $id);
+		$stmt->bindParam('first_name', $first_name);
+		$stmt->bindParam('last_name', $last_name);
+		$stmt->bindParam('image_name', $image_name);
+		$stmt->bindParam('email', $email);
+		$stmt->bindParam('favorite', $favorite);
+		return $stmt->execute();
+	}
+	
 	/*=== Insert a new user (contact) into db ===*/
 	public function addNewUser($first_name, $last_name, $image_name, $email, $favorites)
 	{
@@ -60,6 +87,15 @@ class User extends BaseModel
 		$stmt->bindParam('name', $name);
 		$stmt->bindParam('number', $number);
 		$stmt->bindParam('user_id', $user_id);
+		return $stmt->execute();
+	}
+	
+	/*=== Delete user(contact) phones by id ===*/
+	public function deleteUserPhones($id)
+	{
+		$query = "DELETE FROM phones WHERE user_id = :id";
+		$stmt = $this->getConnection()->prepare($query);
+		$stmt->bindParam('id', $id);
 		return $stmt->execute();
 	}
 	
