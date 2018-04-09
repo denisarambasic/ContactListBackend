@@ -36,7 +36,7 @@ class User extends BaseModel
 	/*=== GET all users based on a search value ===*/
 	public function getAllUsersBySearchValue($search_value)
 	{
-		$query = "SELECT users.id, first_name, last_name, image_name, email, favorite FROM users 
+		$query = "SELECT DISTINCT(users.id), first_name, last_name, image_name, email, favorite FROM users 
 					INNER JOIN phones ON users.id = phones.user_id WHERE  first_name LIKE ? OR last_name LIKE ?
 					OR email LIKE ? OR name LIKE ? OR number LIKE ?";
 		$stmt = $this->getConnection()->prepare($query);
