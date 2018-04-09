@@ -8,6 +8,10 @@ $routes = new Routing();
 $routes->setRoute('GET', '/api/users', 'UserController', 'getAllUsers', []);
 /*== Get all favorite users ==*/
 $routes->setRoute('GET', '/api/users/favorites', 'UserController', 'getAllFavoritesUsers', []);
+
+/*== Get all users based on a search value ==*/
+$routes->setRoute('GET', '/api/users/search', 'UserController', 'getAllUsersOnSearch', ['value']);
+
 $routes->setRoute('POST', '/api/users/create', 'UserController', 'createUser', []);
 $routes->setRoute('OPTIONS', '/api/users/create', 'UserController', 'createUser', []);
 
